@@ -1,0 +1,13 @@
+{
+  "version": "v1.0",
+  "modpack": "Ultimate Create Collection",
+  "minecraft": "1.21.1",
+  "loader": "NeoForge",
+  "loaderVersion": "21.1.250",
+  "download": "https://files.steampunksmp.com/steampunk/ucc/pack.zip",
+  "sha256": "",
+  "size": 0,
+  "releaseNotes": [
+    "Changed from Sakura Updater to a custom updater"
+  ]
+}
