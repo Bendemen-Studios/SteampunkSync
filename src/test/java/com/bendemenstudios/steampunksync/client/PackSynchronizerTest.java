@@ -2,6 +2,7 @@ package com.bendemenstudios.steampunksync.client;
 
 import com.bendemenstudios.steampunksync.model.VersionManifest;
 import org.junit.jupiter.api.Test;
+import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;
 import java.util.zip.*;
