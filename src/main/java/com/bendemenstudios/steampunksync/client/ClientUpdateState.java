@@ -1,26 +1,3 @@
 package com.bendemenstudios.steampunksync.client;
-
-import com.bendemenstudios.steampunksync.model.VersionManifest;
-
-public final class ClientUpdateState {
-    private static volatile VersionManifest available;
-    private static volatile String installedVersion;
-
-    private ClientUpdateState() {}
-
-    public static void setAvailable(VersionManifest manifest) {
-        available = manifest;
-    }
-
-    public static VersionManifest available() {
-        return available;
-    }
-
-    public static String installedVersion() {
-        return installedVersion;
-    }
-
-    public static void setInstalledVersion(String version) {
-        installedVersion = version;
-    }
-}
+import com.bendemenstudios.steampunksync.model.VersionManifest; import java.io.*; import java.nio.file.*;
+public final class ClientUpdateState {private static volatile VersionManifest available;private static volatile String installedVersion;private ClientUpdateState(){}public static void setAvailable(VersionManifest m){available=m;}public static VersionManifest available(){return available;}public static String installedVersion(){return installedVersion;}public static void load(Path gameDir){try{Path p=gameDir.resolve("steampunksync-version.txt");if(Files.exists(p))installedVersion=Files.readString(p).trim();}catch(IOException ignored){}}public static void setInstalledVersion(Path gameDir,String v){installedVersion=v;try{Files.writeString(gameDir.resolve("steampunksync-version.txt"),v,StandardOpenOption.CREATE,StandardOpenOption.TRUNCATE_EXISTING);}catch(IOException ignored){}}}
