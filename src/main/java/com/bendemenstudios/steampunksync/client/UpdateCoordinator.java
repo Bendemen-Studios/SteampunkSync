@@ -2,10 +2,11 @@ package com.bendemenstudios.steampunksync.client;
 
 import com.bendemenstudios.steampunksync.config.SteampunkSyncConfig;
 import com.bendemenstudios.steampunksync.model.VersionManifest;
+import com.bendemenstudios.steampunksync.util.VersionComparator;
 import com.google.gson.Gson;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.SubscribeEvent;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -15,7 +16,9 @@ import java.time.Duration;
 
 public final class UpdateCoordinator {
     private static final Gson GSON = new Gson();
-    private static final HttpClient HTTP = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+    private static final HttpClient HTTP = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
     private static boolean started;
 
     private UpdateCoordinator() {}
@@ -37,14 +40,22 @@ public final class UpdateCoordinator {
                     HttpRequest.newBuilder(URI.create(SteampunkSyncConfig.VERSION_URL.get()))
                             .timeout(Duration.ofSeconds(15))
                             .header("Accept", "application/json")
-                            .GET().build(),
+                            .GET()
+                            .build(),
                     HttpResponse.BodyHandlers.ofString()
             ).body();
+
             VersionManifest manifest = GSON.fromJson(body, VersionManifest.class);
             if (manifest == null || manifest.version() == null || manifest.download() == null) return;
+
+            String installed = ClientUpdateState.installedVersion();
+            if (installed != null && VersionComparator.compare(manifest.version(), installed) <= 0) {
+                return;
+            }
+
             ClientUpdateState.setAvailable(manifest);
         } catch (Exception ignored) {
-            // Offline/update endpoint errors must never prevent Minecraft from launching.
+            // Network/update errors never block Minecraft startup.
         }
     }
 }
